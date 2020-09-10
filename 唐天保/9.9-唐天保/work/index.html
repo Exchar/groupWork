@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>增删查改</title>
+		<link rel="stylesheet" type="text/css" href="plugin/layui/css/layui.css" />
+		<script src="plugin/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+		<style type="text/css">
+			#tableMain {
+				margin-top: 20px !important;
+				text-align: center;
+				width: 80%;
+				margin: auto;
+			}
+
+			tr>th {
+				text-align: center !important;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<!-- 模态框 -->
+			<!-- Button trigger modal -->
+			<!-- Modal -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+						</div>
+						<div class="modal-body" id="myModalBody">
+							<div><span>姓名:</span><input class="layui-input" type="text" v-model="inpName" placeholder="输入姓名"></div>
+							<div><span>工作:</span><input class="layui-input" type="text" v-model="inpWork" placeholder="工作名称"></div>
+							<div><span>邮箱:</span><input class="layui-input" type="text" v-model="inpMail" placeholder="输入邮箱"></div>
+							<div><span>电话:</span><input class="layui-input" type="text" v-model="inpPhone" placeholder="输入电话号码"></div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+							<button type="button" v-show="isAdd" class="btn btn-primary" @click="addItemHandler()">添加</button>
+							<button type="button" v-show="!isAdd" class="btn btn-primary" @click="saveItemData(updateId)">修改</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<table id="tableMain" class="layui-table ">
+
+				<input type="text" class="layui-input-block" v-model="searchText" placeholder="输入名字以搜索" id="searchInp" />
+				<button type="button" data-toggle="modal" data-target="#myModal" class="layui-btn layui-btn-primary" id="addBtn" @click="addHandle()">添加</button>
+
+				<thead>
+					<tr>
+						<th>姓名</th>
+						<th>工作</th>
+						<th>邮箱</th>
+						<th>电话号码</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="item in userFilted" :key="item.ID">
+						<td>{{item.name}}</td>
+						<td>{{item.JobTitle}}</td>
+						<td>{{item.EmailAddress}}</td>
+						<td>{{item.phone}}</td>
+						<td><span class="layui-btn layui-btn-danger" @click="delHandler(item.ID)">删除</span><span class="layui-btn layui-btn-normal"
+							 data-toggle="modal" data-target="#myModal" @click="updateItemHander(item.ID)">修改</span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var layui = layui.layer;
+			var testData = [{
+					"ID": "1",
+					"JobTitle": "IT Support Staff",
+					"EmailAddress": "Jacqueline_Hobson2070@yahoo.com",
+					"name": "Hobson",
+					"phone": "2-311-038-7030"
+				},
+				{
+					"ID": "2",
+					"JobTitle": "Steward",
+					"EmailAddress": "Danny_Alcroft9519@qater.org",
+					"name": "Alcroft",
+					"phone": "3-187-774-3666"
+				},
+				{
+					"ID": "3",
+					"JobTitle": "Inspector",
+					"EmailAddress": "Eden_Judd1916@twace.org",
+					"name": "Judd",
+					"phone": "8-548-122-0681"
+				},
+				{
+					"ID": "4",
+					"JobTitle": "Designer",
+					"EmailAddress": "Alexia_Potts5815@mafthy.com",
+					"name": "Potts",
+					"phone": "1-621-345-7251"
+				},
+				{
+					"ID": "5",
+					"JobTitle": "Business Broker",
+					"EmailAddress": "Sienna_Lee103@ovock.tech",
+					"name": "Lee",
+					"phone": "7-237-175-7183"
+				},
+				{
+					"ID": "6",
+					"JobTitle": "Mobile Developer",
+					"EmailAddress": "Naomi_Wilkinson9968@gmail.com",
+					"name": "Wilkinson",
+					"phone": "3-688-408-1761"
+				},
+				{
+					"ID": "7",
+					"JobTitle": "Production Painter",
+					"EmailAddress": "David_Patel6211@gembat.biz",
+					"name": "Patel",
+					"phone": "3-416-875-3252"
+				},
+				{
+					"ID": "8",
+					"JobTitle": "Bookkeeper",
+					"EmailAddress": "William_Ventura2800@brety.org",
+					"name": "Ventura",
+					"phone": "3-808-214-6314"
+				},
+				{
+					"ID": "9",
+					"JobTitle": "Cook",
+					"EmailAddress": "Hayden_Wilson1509@ubusive.com",
+					"name": "Wilson",
+					"phone": "1-475-483-5245"
+				},
+				{
+					"ID": "10",
+					"JobTitle": "Dentist",
+					"EmailAddress": "Evelynn_Dixon5239@zorer.org",
+					"name": "Dixon",
+					"phone": "6-452-025-0550"
+				},
+				{
+					"ID": "11",
+					"JobTitle": "Machine Operator",
+					"EmailAddress": "Jane_Smith8768@kideod.biz",
+					"name": "Smith",
+					"phone": "7-640-805-3067"
+				},
+				{
+					"ID": "12",
+					"JobTitle": "Investment  Advisor",
+					"EmailAddress": "Marjorie_Cooper4519@nickia.com",
+					"name": "Cooper",
+					"phone": "0-350-111-5723"
+				},
+				{
+					"ID": "13",
+					"JobTitle": "Mobile Developer",
+					"EmailAddress": "Cameron_Avery2799@iatim.tech",
+					"name": "Avery",
+					"phone": "7-107-748-7047"
+				},
+				{
+					"ID": "14",
+					"JobTitle": "Front Desk Coordinator",
+					"EmailAddress": "Dasha_Ogilvy9651@famism.biz",
+					"name": "Ogilvy",
+					"phone": "7-823-652-4062"
+				},
+				{
+					"ID": "15",
+					"JobTitle": "Webmaster",
+					"EmailAddress": "Tony_Owen2519@iatim.tech",
+					"name": "Owen",
+					"phone": "6-337-275-2153"
+				}
+			];
+			var vm = new Vue({
+				el: "#app",
+				data: {
+					userInfoList: testData,
+					searchText: "",
+					inpName: "",
+					inpMail: "",
+					inpPhone: "",
+					inpWork: "",
+					isAdd: false,
+					updateId: ""
+				},
+				computed: {
+					userFilted: function() {
+						return this.userInfoList.filter((item) => {
+							return item.name.includes(this.searchText) > 0;
+						})
+					}
+				},
+				methods: {
+					delHandler: function(id) {
+						console.log(id)
+						for (let i in this.userInfoList) {
+							if (this.userInfoList[i].ID == id) {
+								console.log(i)
+								this.userInfoList.splice(i, 1);
+								break;
+							}
+
+						}
+					},
+					addItemHandler: function() {
+						let parArr = ["姓名", "工作", "邮箱", "电话"];
+						let isTrue = true;
+						for (let i in parArr) {
+							if (!$("#myModalBody").find("input").eq(i).val()) {
+								layer.msg(parArr[i] + "不能为空");
+								isTrue = false;
+								break;
+							}
+						}
+						if (isTrue) {
+							let obj = {
+								ID: this.userInfoList[this.userInfoList.length - 1].ID + 1,
+								JobTitle: this.inpWork,
+								EmailAddress: this.inpMail,
+								name: this.inpName,
+								phone: this.inpPhone
+							};
+							this.userInfoList.push({ ...obj
+							});
+							$("#myModal").modal("hide");
+						}
+
+					},
+					updateItemHander: function(id) {
+						this.isAdd = false;
+						console.log(id);
+						for (let i in this.userInfoList) {
+							if (this.userInfoList[i].ID == id) {
+								this.inpName = this.userInfoList[i].name;
+								this.inpMail = this.userInfoList[i].EmailAddress;
+								this.inpWork = this.userInfoList[i].JobTitle;
+								this.inpPhone = this.userInfoList[i].phone;
+								this.updateId = this.userInfoList[i].ID;
+								break;
+							}
+						}
+					},
+					saveItemData: function(id) {
+						for (let i in this.userInfoList) {
+							if (this.userInfoList[i].ID == id) {
+								this.userInfoList[i].name = this.inpName;
+								this.userInfoList[i].EmailAddress = this.inpMail;
+								this.userInfoList[i].JobTitle = this.inpWork;
+								this.userInfoList[i].phone = this.inpPhone;
+								this.updateId = "";
+							}
+							$("#myModal").modal("hide");
+							break;
+						}
+
+
+					},
+					addHandle:function(){
+						this.isAdd = true;
+					}
+
+				}
+			})
+		</script>
+	</body>
+</html>

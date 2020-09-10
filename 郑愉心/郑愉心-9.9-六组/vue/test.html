@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="plugins/bootstrap-3.3.7-dist/css/bootstrap.css">
+</head>
+
+<body>
+    <div id="app">
+        搜索<input type="text" v-model="search" placeholder="ID">
+        <ul>
+            <li v-for="item in searchList" :key="item.ID">
+                {{item.ID}}---{{item.JobTitle}}---{{item.EmailAddress}}---{{item.name}}---{{item.phone}}---
+                <button @click="del(item.ID)">删除</button><button data-toggle="modal" data-target="#myModal" @click="edit(item.ID)">修改</button>
+
+        </ul>
+        ID: <input type="text" v-model="addForm.ID" placeholder="ID">
+        <br/> JobTitle :
+        <input type="text" v-model="addForm.JobTitle" placeholder="JobTitle"><br/> EmailAddress:
+        <input type="text" v-model="addForm.EmailAddress" placeholder="EmailAddress"><br/> name:
+        <input type="text" v-model="addForm.name" placeholder="name"><br/> phone:
+        <input type="text" v-model="addForm.phone" placeholder="phone"><br/>
+        <button @click="add">添加</button>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <input type="text" v-model="editForm.JobTitle" placeholder="JobTitle"><br/>
+                        <input type="text" v-model="editForm.EmailAddress" placeholder="EmailAddress"><br/>
+                        <input type="text" v-model="editForm.name" placeholder="name"><br/>
+                        <input type="text" v-model="editForm.phone" placeholder="phone">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" @click="editNew(ids)">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="plugins/jquery.js"></script>
+    <script src="plugins/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="js/vue.js"></script>
+    <script>
+        var vm = new Vue({
+            data: {
+                list: [{
+                    "ID": "1",
+                    "JobTitle": "IT Support Staff",
+                    "EmailAddress": "Jacqueline_Hobson2070@yahoo.com",
+                    "name": "Hobson",
+                    "phone": "2-311-038-7030"
+                }, {
+                    "ID": "2",
+                    "JobTitle": "Steward",
+                    "EmailAddress": "Danny_Alcroft9519@qater.org",
+                    "name": "Alcroft",
+                    "phone": "3-187-774-3666"
+                }, {
+                    "ID": "3",
+                    "JobTitle": "Inspector",
+                    "EmailAddress": "Eden_Judd1916@twace.org",
+                    "name": "Judd",
+                    "phone": "8-548-122-0681"
+                }, {
+                    "ID": "4",
+                    "JobTitle": "Designer",
+                    "EmailAddress": "Alexia_Potts5815@mafthy.com",
+                    "name": "Potts",
+                    "phone": "1-621-345-7251"
+                }, {
+                    "ID": "5",
+                    "JobTitle": "Business Broker",
+                    "EmailAddress": "Sienna_Lee103@ovock.tech",
+                    "name": "Lee",
+                    "phone": "7-237-175-7183"
+                }, {
+                    "ID": "6",
+                    "JobTitle": "Mobile Developer",
+                    "EmailAddress": "Naomi_Wilkinson9968@gmail.com",
+                    "name": "Wilkinson",
+                    "phone": "3-688-408-1761"
+                }, {
+                    "ID": "7",
+                    "JobTitle": "Production Painter",
+                    "EmailAddress": "David_Patel6211@gembat.biz",
+                    "name": "Patel",
+                    "phone": "3-416-875-3252"
+                }, {
+                    "ID": "8",
+                    "JobTitle": "Bookkeeper",
+                    "EmailAddress": "William_Ventura2800@brety.org",
+                    "name": "Ventura",
+                    "phone": "3-808-214-6314"
+                }],
+                search: "",
+                addForm: {
+                    ID: "",
+                    JobTitle: "",
+                    EmailAddress: "",
+                    name: "",
+                    phone: ""
+                },
+                editForm: {
+
+                    JobTitle: "",
+                    EmailAddress: "",
+                    name: "",
+                    phone: ""
+                },
+                ids: ""
+            },
+            computed: {
+                searchList: function() {
+                    return this.list.filter((item) => {
+                            return item.ID.indexOf(this.search) > -1;
+                        })
+                        // var arr = [];
+                        // for (var i = 0; i < this.list.length; i++) {
+                        //     if (this.list[i].ID.indexOf(this.search) > -1) {
+                        //         arr.push(this.list[i])
+                        //     }
+                        // }
+                        // return arr;
+                }
+            },
+            methods: {
+                del: function(id) {
+                    for (var i = 0; i < this.list.length; i++) {
+                        if (this.list[i].ID == id) {
+                            this.list.splice(i, 1);
+                            break;
+                        }
+                    }
+                },
+                add: function() {
+                    if (this.addForm.ID.length > 0) {
+                        var obj = {...this.addForm
+                        };
+                        this.list.push(obj);
+                        this.addForm.ID = "";
+                        this.addForm.JobTitle = "";
+                        this.addForm.EmailAddress = "";
+                        this.addForm.name = "";
+                        this.addForm.phone = "";
+                    }
+                },
+                edit: function(id) {
+                    console.log(id)
+                    for (var i = 0; i < this.list.length; i++) {
+                        if (this.list[i].ID == id) {
+                            this.editForm.JobTitle = this.list[i].JobTitle;
+                            this.editForm.EmailAddress = this.list[i].EmailAddress;
+                            this.editForm.name = this.list[i].name;
+                            this.editForm.phone = this.list[i].phone;
+                            this.ids = id;
+                        }
+                    }
+                },
+                editNew: function(id) {
+                    for (var i = 0; i < this.list.length; i++) {
+                        if (this.list[i].ID == id) {
+                            this.list[i].JobTitle = this.editForm.JobTitle;
+                            this.list[i].EmailAddress = EmailAddress = this.editForm.EmailAddress;
+                            this.list[i].name = this.editForm.name;
+                            this.list[i].phone = this.editForm.phone;
+                            console.log(this.list[i].phone)
+                            $('#myModal').modal('hide');
+                        }
+                    }
+
+                }
+            }
+        }).$mount("#app");
+    </script>
+</body>
+
+</html>
