@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>增删改查</title>
+</head>
+<body>
+
+<div id="app">
+	<input type="text" v-model="search" placeholder="请输入姓名">
+	<ul>
+		<li v-for="item in searchStuInfo" :key="item.SID" >
+			{{item.SID}} {{item.sName}} {{item.sex}} {{item.age}} <button @click="del(item.SID)">删除</button> <button @click="change(item.SID)">修改</button>
+		</li>
+	</ul>
+	<input type="text" v-model="newStu.SID" placeholder="请输入学号"><br/>
+	<input type="text" v-model="newStu.sName" placeholder="请输入姓名"><br/>
+	<input type="text" v-model="newStu.sex" placeholder="请输入性别"><br/>
+	<input type="text" v-model="newStu.age" placeholder="请输入年龄"><br/>
+	<button @click="add">添加</button>
+
+</div>
+<script src="../js/vue.js"></script>
+<script>
+	const app=new Vue({
+		el:'#app',
+		data:{
+		  search:"",
+		  stuInfo:[
+				{SID:1,sName:"小李",sex:"女",age:21},
+        {SID:2,sName:"小罗",sex:"女",age:22},
+        {SID:3,sName:"小王",sex:"男",age:11},
+        {SID:4,sName:"小赵",sex:"女",age:18},
+        {SID:5,sName:"小雪",sex:"女",age:19}
+			],
+			newStu:{
+        SID:"",
+        sName:"",
+        sex:"",
+        age:""
+			}
+		},
+		computed:{
+		  searchStuInfo:function () {
+		    return  this.stuInfo.filter( (item) => {
+					return item.sName.indexOf(this.search)>=0
+        })
+      }
+		},
+		methods:{
+		  del:function (SID) {
+					for (let i =0;i<this.stuInfo.length;i++){
+					  if (this.stuInfo[i].SID==SID){
+					    this.stuInfo.splice(i,1);
+					    break;
+						}
+					}
+      },
+      add:function () {
+        var obj = {...this.newStu};
+        this.stuInfo.push(obj);
+      },
+			change:function () {
+
+      }
+		}
+	})
+</script>
+</body>
+</html>
