@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .mt{
+            width: 200px;
+            height: 200px;
+            /* display: none; */
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="search" placeholder="卡号">
+        <ul>
+            <li v-for="item in searchList" :key="item.id">
+        {{item.id}}---{{item.cardId}}---{{item.pwd}}---{{item.money}}--<button  @click="edit(item.id)">修改</button>---<button @click="del(item.id)">删除</button>
+            </li>
+        </ul>
+        <input type="text" v-model="addForm.id" placeholder="id"></br>
+        <input type="text" v-model="addForm.cardId" placeholder="cardId"></br>
+        <input type="text" v-model="addForm.pwd" placeholder="pwd"></br>
+        <input type="text" v-model="addForm.money" placeholder="money"></br>
+        <button @click="add">添   加</button>
+        <div class="mt" v-show="isshou">
+            <input type="text" placeholder="id" v-model="upForm.id">
+            <input type="text" placeholder="cardId" v-model="upForm.cardId">
+            <input type="text" placeholder="pwd" v-model="upForm.pwd">
+            <input type="text" placeholder="money" v-model="upForm.money">
+            <button  @click="queRenXiuGai(upForm)">修改</button>
+            <button  @click="quxiao()">取消</button>
+            
+        </div>
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+    <script src="./vue.js"></script>
+    <script type="text/javascript">
+    var vm = new Vue({
+        el:"#app",
+        
+        data:{
+            isshou:false,
+            search:"",
+            list:[
+            {id: 1,cardId: "6225859151511561",pwd:"888888", money: 5000},
+            {id: 2,cardId: "6225880287861234",pwd:"888888", money: 6255},
+            {id: 3,cardId: "6225856156165115",pwd:"123456", money: 5041},
+            {id: 4,cardId: "6225880287861234",pwd:"888888", money: 50560},
+            {id: 5,cardId: "6225856165156115",pwd:"321456", money: 55050},
+            {id: 6,cardId: "6225880287861234",pwd:"888888", money: 57417},
+            {id: 7,cardId: "6225880287861234",pwd:"888888", money: 5277}] ,
+            editDetail:{},
+            addForm:{
+                di:"",
+                cardId:"",
+                pwd:"",
+                money:""
+            },
+            upForm:{
+                id:"",
+                cardId:"",
+                pwd:"",
+                money:""
+            }
+        },
+        computed:{
+            searchList:function(){
+                var arr =[];
+                for(var i=0;i<this.list.length;i++){
+                    if(this.list[i].cardId.indexOf(this.search)>=0){
+                        arr.push(this.list[i]);
+                    }
+                }
+                return arr;
+            }
+                },
+        methods:{
+            del:function(id){
+                for(var i=0;i<this.list.length;i++){
+                    if(this.list[i].id == id){
+                        this.list.splice(i,1);
+                        break;
+                    }
+                }
+            },
+            add:function(){
+                this.list.push(this.addForm);
+                this.list.id="";
+
+            },
+            quxiao:function(){
+                this.isshou=false;
+            },
+            edit:function(id){
+                this.isshou=true;  
+                console.log(id); 
+                for(var i=0;i<this.list.length;i++){
+                    if(this.list[i].id == id){
+                        this.upForm.id=this.list[i].id;
+                        this.upForm.cardId=this.list[i].cardId;
+                        this.upForm.pwd=this.list[i].pwd;
+                        this.upForm.money=this.list[i].money;
+                    }
+                }  
+            },
+            queRenXiuGai:function(obj){
+                // console.log(obj.id);
+                for(var i=0;i<this.list.length;i++){
+                    if(obj.id==this.list[i].id){
+                       
+                        //this.$data.list[i].cardId=obj.cardId;
+                        this.$data.list[i].pwd=obj.pwd;
+                        this.$data.list[i].money=obj.money;
+                        this.$set(this.$data.list);
+                        break;
+                    }
+                }
+            }
+
+            
+        },
+        
+    })
+
+
+
+    </script>
+</body>
+</html>
