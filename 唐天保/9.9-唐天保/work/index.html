@@ -4,9 +4,6 @@
 		<meta charset="utf-8">
 		<title>增删查改</title>
 		<link rel="stylesheet" type="text/css" href="plugin/layui/css/layui.css" />
-		<script src="plugin/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
-		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
-		<script src="js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
 		<style type="text/css">
 			#tableMain {
@@ -15,9 +12,24 @@
 				width: 80%;
 				margin: auto;
 			}
-
+			#myModal{
+				opacity: 0;
+			}
 			tr>th {
 				text-align: center !important;
+			}
+			.fade-enter-active, .fade-leave-active {
+			  transition: opacity .15s;
+			}
+			.fade-enter, .fade-leave-to {
+			  opacity: 0;
+			}
+			#myModal.display{
+				display: block;
+				opacity: 1;
+			}
+			.modal-dialog{
+				margin-top: 200px;
 			}
 		</style>
 	</head>
@@ -26,7 +38,7 @@
 			<!-- 模态框 -->
 			<!-- Button trigger modal -->
 			<!-- Modal -->
-			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" v-show="modalDisplay" :class="{display:modalDisplay}">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -40,9 +52,9 @@
 							<div><span>电话:</span><input class="layui-input" type="text" v-model="inpPhone" placeholder="输入电话号码"></div>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-							<button type="button" v-show="isAdd" class="btn btn-primary" @click="addItemHandler()">添加</button>
-							<button type="button" v-show="!isAdd" class="btn btn-primary" @click="saveItemData(updateId)">修改</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal" @click="closeModal()">关闭</button>
+							<button type="button" v-show="isAdd" class="btn btn-primary" @click="addItemHandler($event)">添加</button>
+							<button type="button" v-show="!isAdd" class="btn btn-primary" @click="saveItemData(updateId,$event)">修改</button>
 						</div>
 					</div>
 				</div>
@@ -50,7 +62,7 @@
 			<table id="tableMain" class="layui-table ">
 
 				<input type="text" class="layui-input-block" v-model="searchText" placeholder="输入名字以搜索" id="searchInp" />
-				<button type="button" data-toggle="modal" data-target="#myModal" class="layui-btn layui-btn-primary" id="addBtn" @click="addHandle()">添加</button>
+				<button type="button" class="layui-btn layui-btn-primary" id="addBtn" @click="addHandle()">添加</button>
 
 				<thead>
 					<tr>
@@ -76,7 +88,6 @@
 
 		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			var layui = layui.layer;
 			var testData = [{
 					"ID": "1",
 					"JobTitle": "IT Support Staff",
@@ -193,7 +204,8 @@
 					inpPhone: "",
 					inpWork: "",
 					isAdd: false,
-					updateId: ""
+					updateId: "",
+					modalDisplay:false
 				},
 				computed: {
 					userFilted: function() {
@@ -214,16 +226,8 @@
 
 						}
 					},
-					addItemHandler: function() {
-						let parArr = ["姓名", "工作", "邮箱", "电话"];
-						let isTrue = true;
-						for (let i in parArr) {
-							if (!$("#myModalBody").find("input").eq(i).val()) {
-								layer.msg(parArr[i] + "不能为空");
-								isTrue = false;
-								break;
-							}
-						}
+					addItemHandler: function(e) {
+						
 						if (isTrue) {
 							let obj = {
 								ID: this.userInfoList[this.userInfoList.length - 1].ID + 1,
@@ -232,14 +236,15 @@
 								name: this.inpName,
 								phone: this.inpPhone
 							};
-							this.userInfoList.push({ ...obj
-							});
-							$("#myModal").modal("hide");
+							this.userInfoList.push({ ...obj});
+							this.modalDisplay = false;
+							
 						}
 
 					},
 					updateItemHander: function(id) {
 						this.isAdd = false;
+						this.modalDisplay = true;
 						console.log(id);
 						for (let i in this.userInfoList) {
 							if (this.userInfoList[i].ID == id) {
@@ -252,7 +257,7 @@
 							}
 						}
 					},
-					saveItemData: function(id) {
+					saveItemData: function(id,e) {
 						for (let i in this.userInfoList) {
 							if (this.userInfoList[i].ID == id) {
 								this.userInfoList[i].name = this.inpName;
@@ -260,15 +265,19 @@
 								this.userInfoList[i].JobTitle = this.inpWork;
 								this.userInfoList[i].phone = this.inpPhone;
 								this.updateId = "";
+								this.modalDisplay = false;
+								break;
 							}
-							$("#myModal").modal("hide");
-							break;
 						}
 
 
 					},
 					addHandle:function(){
 						this.isAdd = true;
+						this.modalDisplay = true;
+					},
+					closeModal:function(){
+						this.modalDisplay = false;
 					}
 
 				}
