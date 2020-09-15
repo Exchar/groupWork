@@ -16,7 +16,7 @@ app.post("/userLogin", function(request, response) {
         user: 'root',
         password: '',
         port: 3306,
-        database: 'kindergarten'
+        database: 'manage'
     });
     conn.connect();
     conn.query("select * from Staff where StaffName=? and Pwd=?", [username, pwd], function(err, data) {
@@ -39,7 +39,7 @@ app.post("/deptList", function(request, response) {
         user: 'root',
         password: '',
         port: 3306,
-        database: 'kindergarten'
+        database: 'manage'
     });
     conn.connect();
     conn.query("select * from department", [], function(err, data) {
@@ -72,9 +72,9 @@ app.post("/addDept", function(request, response) {
                 response.send({ code: 200, message: "添加成功" });
         }else{
             response.send({ code: 200, message: "添加失败" });
-        } 
+        }
             }
-                
+
     });
     conn.end();
 });
@@ -86,7 +86,7 @@ app.get("/delDept", function(request, response) {
         user: 'root',
         password: '',
         port: 3306,
-        database: 'kindergarten'
+        database: 'manage'
     });
     conn.connect();
     conn.query("update department set Status = 0 where DeptNo = ?", [deptNo], function(err, data) {
@@ -98,9 +98,9 @@ app.get("/delDept", function(request, response) {
                 response.send({ code: 200, message: "删除成功" });
         }else{
             response.send({ code: 200, message: "删除失败" });
-        } 
+        }
             }
-                
+
     });
     conn.end();
 });
@@ -115,7 +115,7 @@ app.post("/editDept", function(request, response) {
         user: 'root',
         password: '',
         port: 3306,
-        database: 'kindergarten'
+        database: 'manage'
     });
     conn.connect();
     conn.query("update department set DeptName=?,DeptDescript=?,Status=? where DeptNo=?", [deptname,deptdescript,status,deptno], function(err, data) {
@@ -127,12 +127,12 @@ app.post("/editDept", function(request, response) {
                 response.send({ code: 200, message: "修改成功" });
         }else{
             response.send({ code: 200, message: "修改失败" });
-        } 
+        }
             }
-                
+
     });
     conn.end();
 });
-app.listen(8088, function() {
+app.listen(8080, function() {
     console.log("服务已启动")
 })

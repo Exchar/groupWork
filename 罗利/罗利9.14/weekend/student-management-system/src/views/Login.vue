@@ -36,7 +36,11 @@ export default {
         // 发起一个请求到服务器
         this.$axios.post('/api/userLogin', { UserName: this.user.username, Pwd: this.user.password })
           .then((data) => {
-            console.log(data.data)
+            if (data.data.message === '登录成功') {
+              this.$router.push('home')
+            } else {
+              this.$alert(data.data.message)
+            }
           }).catch((err) => {
             console.log(err)
             this.$message.error('请求出错了，请联系管理员')

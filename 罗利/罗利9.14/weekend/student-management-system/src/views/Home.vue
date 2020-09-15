@@ -1,60 +1,73 @@
 <template>
-  <el-container>
-    <el-header>
-      <el-row>
-        <el-col :span="6"><h3>小小幼儿园管理系统</h3></el-col>
-        <el-col :span="12">
-          <p></p>
-        </el-col>
-        <el-col :span="6"><p>Exchar</p></el-col>
-      </el-row>
-    </el-header>
+  <div class="home">
     <el-container>
-      <el-aside width="200px">
-        <leftMenu />
-      </el-aside>
+      <el-header>
+        <el-row>
+          <el-col :span="6">
+            <h3>幼儿园管理系统</h3>
+          </el-col>
+          <el-col :span="12"><p></p></el-col>
+          <el-col :span="6"><p>
+            adam
+          </p>
+          </el-col>
+        </el-row>
+      </el-header>
       <el-container>
+        <el-aside width="200px">
+          <leftMenu />
+        </el-aside>
         <el-main>
           <router-view></router-view>
         </el-main>
       </el-container>
+    <el-footer>
+      <p>
+        2020幼儿园管理系统
+      </p></el-footer>
     </el-container>
-    <el-footer>Footer</el-footer>
-  </el-container>
+  </div>
 </template>
+
 <script>
-  import leftMenu from '../components/leftMenu'
+  import leftMenu from '../components/leftMenu.vue'
   export default {
-    name: 'index',
+    name: 'Home',
     components: {
       leftMenu
     }
   }
 </script>
 <style scoped>
-  *{
-    margin: 0;
-    padding: 0;
-  }
-  .el-header, .el-footer {
+  el-header, el-footer {
     background-color: #0F4E74;
     color: white;
     height: 60px;
-    line-height: 60px;
-    text-align: center;
   }
-  .el-header .el-col p{
+  el-footer {
+    text-align: center;
+    line-height: 60px;
+  }
+  el-header el-col{
     height: 60px;
     line-height: 60px;
   }
-  .el-aside {
-    background-color: #D3DCE6;
+  el-header el-col p{
+    text-align: right;
+  }
+  el-aside {
+    background-color: #1570A6;
     color: #333;
+    text-align: center;
     line-height: 200px;
   }
-  .el-main {
+  el-main {
+    min-height: 500px;
     background-color: #E9EEF3;
     color: #333;
-    min-height: 550px;
+    text-align: center;
+  }
+  body > el-container {
+    margin-bottom: 40px;
   }
 </style>

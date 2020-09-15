@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import leftMenu from './../components/leftMenu.vue'
+import leftMenu from '../components/leftMenu.vue'
 export default {
   name: 'Home',
   components: {
